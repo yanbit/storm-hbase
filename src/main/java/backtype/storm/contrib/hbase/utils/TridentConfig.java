@@ -1,21 +1,16 @@
 package backtype.storm.contrib.hbase.utils;
 
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
+import storm.trident.state.*;
+import storm.trident.tuple.TridentTuple;
+import sun.rmi.runtime.Log;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
-
-import storm.trident.state.JSONNonTransactionalSerializer;
-import storm.trident.state.JSONOpaqueSerializer;
-import storm.trident.state.JSONTransactionalSerializer;
-import storm.trident.state.Serializer;
-import storm.trident.state.StateType;
-import storm.trident.tuple.TridentTuple;
-
-import com.esotericsoftware.minlog.Log;
 
 /**
  * Configuration for Storm Trident state persistence in HBase
