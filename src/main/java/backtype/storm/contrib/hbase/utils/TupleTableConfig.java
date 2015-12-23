@@ -1,18 +1,12 @@
 package backtype.storm.contrib.hbase.utils;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
-
+import backtype.storm.tuple.Tuple;
 import org.apache.hadoop.hbase.client.Increment;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import backtype.storm.tuple.Tuple;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Configuration for Storm {@link Tuple} to HBase serialization.
