@@ -37,7 +37,7 @@
 	</repositories>
 
 	<properties>
-		<storm.version>0.8.2</storm.version>
+		<storm.version>0.10.0</storm.version>
 		<!--<hbase.version>1.0.0-cdh5.4.7</hbase.version>-->
 
 		<hbase.version>0.94.2-cdh4.2.1</hbase.version>
@@ -46,8 +46,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>storm</groupId>
-			<artifactId>storm</artifactId>
+			<groupId>org.apache.storm</groupId>
+			<artifactId>storm-core</artifactId>
 			<version>${storm.version}</version>
 		</dependency>
 		<dependency>
@@ -79,8 +79,23 @@
 		<dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-kafka</artifactId>
-			<scope>compile</scope>
 			<version>0.10.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.8.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
