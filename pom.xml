@@ -79,6 +79,7 @@
 		<dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-kafka</artifactId>
+			<scope>compile</scope>
 			<version>0.10.0</version>
 		</dependency>
 	</dependencies>
