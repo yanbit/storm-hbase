@@ -5,7 +5,6 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.contrib.hbase.trident.HBaseAggregateState;
 import backtype.storm.contrib.hbase.utils.TridentConfig;
 import backtype.storm.generated.AlreadyAliveException;
-import backtype.storm.generated.AuthorizationException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
@@ -78,7 +77,7 @@ public class TestHBase {
    * @throws InterruptedException
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static void main(String[] args) throws InterruptedException, InvalidTopologyException, AuthorizationException, AlreadyAliveException {
+  public static void main(String[] args) throws InterruptedException, InvalidTopologyException,  AlreadyAliveException {
     BrokerHosts hosts = new ZkHosts("datanode1:2181,datanode2:2181,datanode4:2181");
     TridentKafkaConfig tridentKafkaConfig =
             new TridentKafkaConfig(hosts, "test_request_count", UUID.randomUUID().toString());
