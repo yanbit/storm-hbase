@@ -37,7 +37,7 @@
 	</repositories>
 
 	<properties>
-		<storm.version>0.10.0</storm.version>
+		<storm.version>0.8.2</storm.version>
 		<!--<hbase.version>1.0.0-cdh5.4.7</hbase.version>-->
 
 		<hbase.version>0.94.2-cdh4.2.1</hbase.version>
@@ -46,8 +46,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.storm</groupId>
-			<artifactId>storm-core</artifactId>
+			<groupId>storm</groupId>
+			<artifactId>storm</artifactId>
 			<version>${storm.version}</version>
 		</dependency>
 		<dependency>
