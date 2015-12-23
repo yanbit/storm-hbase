@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import storm.trident.state.*;
 import storm.trident.tuple.TridentTuple;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -98,7 +97,7 @@ public class TridentConfig<T> extends TupleTableConfig {
           try {
             g.setMaxVersions(1);
           } catch (IOException e) {
-            Log.error("Invalid number of versions", e);
+            //Log.error("Invalid number of versions", e);
           }
           if (ts > 0) {
             g.setTimeStamp(ts);
