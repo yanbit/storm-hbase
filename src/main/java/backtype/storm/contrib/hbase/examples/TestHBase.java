@@ -1,23 +1,30 @@
 package backtype.storm.contrib.hbase.examples;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.contrib.hbase.trident.HBaseAggregateState;
 import backtype.storm.contrib.hbase.utils.TridentConfig;
+import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.AuthorizationException;
+import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import backtype.storm.utils.Utils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import storm.kafka.BrokerHosts;
+import storm.kafka.StringScheme;
+import storm.kafka.ZkHosts;
+import storm.kafka.trident.TransactionalTridentKafkaSpout;
+import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.TridentTopology;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.builtin.Count;
 import storm.trident.state.StateFactory;
-import storm.trident.testing.FixedBatchSpout;
 import storm.trident.tuple.TridentTuple;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * An example Storm Trident topology that uses {@link HBaseAggregateState} for
@@ -71,43 +78,29 @@ public class TestHBase {
    * @throws InterruptedException
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static void main(String[] args) throws InterruptedException {
-    List<Object> v0 = HBaseCountersBatchTopology.values.get(0).get(0);
-    List<Object> v1 = HBaseCountersBatchTopology.values.get(0).get(1);
-    List<Object> v2 = HBaseCountersBatchTopology.values.get(0).get(2);
-    List<Object> v3 = HBaseCountersBatchTopology.values.get(0).get(3);
-    List<Object> v4 = HBaseCountersBatchTopology.values.get(0).get(4);
-    List<Object> v5 = HBaseCountersBatchTopology.values.get(1).get(0);
-    List<Object> v6 = HBaseCountersBatchTopology.values.get(1).get(1);
-    List<Object> v7 = HBaseCountersBatchTopology.values.get(1).get(2);
-    List<Object> v8 = HBaseCountersBatchTopology.values.get(2).get(0);
-    List<Object> v9 = HBaseCountersBatchTopology.values.get(2).get(1);
-    List<Object> v10 = HBaseCountersBatchTopology.values.get(2).get(2);
+  public static void main(String[] args) throws InterruptedException, InvalidTopologyException, AuthorizationException, AlreadyAliveException {
+    BrokerHosts hosts = new ZkHosts("datanode1:2181,datanode2:2181,datanode4:2181");
+    TridentKafkaConfig tridentKafkaConfig =
+            new TridentKafkaConfig(hosts, "test_request_count", UUID.randomUUID().toString());
+    tridentKafkaConfig.ignoreZkOffsets=true;
+    tridentKafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+    TransactionalTridentKafkaSpout tridentKafkaSpout = new TransactionalTridentKafkaSpout(tridentKafkaConfig);
 
-    HBaseCountersBatchTopology.values.values();
-
-    FixedBatchSpout spout = new FixedBatchSpout(new Fields("shortid", "url",
-        "user", "date"), 3, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
-    spout.setCycle(false);
-
-    TridentConfig config = new TridentConfig("shorturl", "shortid");
-    config.setBatch(false);
-
+    TridentConfig config = new TridentConfig("test", "key");
+    config.setBatch(true);
+    config.addColumn("f","count");
     StateFactory state = HBaseAggregateState.transactional(config);
 
     TridentTopology topology = new TridentTopology();
     topology
-        .newStream("spout", spout)
-        .each(new Fields("shortid", "date"), new DatePartitionFunction(),
-            new Fields("cf", "cq")).project(new Fields("shortid", "cf", "cq"))
-        .groupBy(new Fields("shortid", "cf", "cq"))
+        .newStream("spout", tridentKafkaSpout)
+        .each(new Fields("str"), new TestHBaseETL(), new Fields("key"))
+        .groupBy(new Fields("key"))
         .persistentAggregate(state, new Count(), new Fields("count"));
 
     Config conf = new Config();
-    LocalCluster cluster = new LocalCluster();
-    cluster.submitTopology("hbase-trident-aggregate", conf, topology.build());
+    conf.setNumWorkers(1);
+    StormSubmitter.submitTopology("hbase-trident-aggregate", conf, topology.build());
 
-    Utils.sleep(5000);
-    cluster.shutdown();
   }
 }
