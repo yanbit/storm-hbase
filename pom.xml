@@ -81,6 +81,16 @@
 			<artifactId>storm-kafka</artifactId>
 			<version>0.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-0.94.6-hadoop-2.0</artifactId>
+			<version>0.94.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-0.94.6-hadoop-2.0</artifactId>
+			<version>0.94.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
